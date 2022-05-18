@@ -7,11 +7,10 @@
 		<PackageId>PowerIT.Govee</PackageId>
 		<Authors>Dan Searle</Authors>
 		<Description>Simple API wrapper for the Govee Home API.</Description>
-		<PackageVersion>1.2.4</PackageVersion>
-		<ReleaseVersion>1.2.4</ReleaseVersion>
+		<PackageVersion>1.2.5</PackageVersion>
+		<ReleaseVersion>1.2.5</ReleaseVersion>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<DevelopmentDependency>true</DevelopmentDependency>
 		<NeutralLanguage>en-GB</NeutralLanguage>
 		<PackageProjectUrl>https://powerit.cloud</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/pit-cloud/govee</RepositoryUrl>
