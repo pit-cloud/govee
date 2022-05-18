@@ -6,11 +6,15 @@
 		<PackOnBuild>true</PackOnBuild>
 		<PackageId>PowerIT.Govee</PackageId>
 		<Authors>Dan Searle</Authors>
-		<Description>Govee Home API wrapper.</Description>
-		<PackageVersion>1.2.2</PackageVersion>
-		<ReleaseVersion>1.2.2</ReleaseVersion>
+		<Description>Simple API wrapper for the Govee Home API.</Description>
+		<PackageVersion>1.2.3</PackageVersion>
+		<ReleaseVersion>1.2.3</ReleaseVersion>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<DevelopmentDependency>true</DevelopmentDependency>
+		<NeutralLanguage>en-GB</NeutralLanguage>
+		<PackageProjectUrl>https://github.com/pit-cloud/govee</PackageProjectUrl>
+		<Title>Govee Home API Wrapper</Title>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="System.Text.Json" Version="6.0.4" />
