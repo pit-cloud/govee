@@ -8,6 +8,8 @@
 	  <None Remove="PowerIT.Govee" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="PowerIT.Govee" Version="1.2.2" />
+	  <PackageReference Include="PowerIT.Govee" Version="1.2.4"><IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+<PrivateAssets>all</PrivateAssets>
+</PackageReference>
 	</ItemGroup>
 </Project>
