@@ -9,7 +9,7 @@ namespace PowerIT.Govee
 {
     public partial class Device
     {
-        public static async Task<Models.Control.Response> On(string deviceId, string model)
+        public static async Task<Models.Control.Response> OnAsync(string deviceId, string model)
         {
             if (Account.IsLoggedIn)
             {
@@ -60,7 +60,7 @@ namespace PowerIT.Govee
             }
         }
 
-        public static async Task<Models.Control.Response> Off(string deviceId, string model)
+        public static async Task<Models.Control.Response> OffAsync(string deviceId, string model)
         {
             if (Account.IsLoggedIn)
             {
@@ -111,7 +111,7 @@ namespace PowerIT.Govee
             }
         }
 
-        public static async Task<Models.Control.Response> Brightness(string deviceId, string model, int brightness)
+        public static async Task<Models.Control.Response> BrightnessAsync(string deviceId, string model, int brightness)
         {
             if (Account.IsLoggedIn)
             {
@@ -166,7 +166,7 @@ namespace PowerIT.Govee
         }
 
 
-        public static async Task<Models.Control.Response> Temprature(string deviceId, string model, int temprature)
+        public static async Task<Models.Control.Response> TempratureAsync(string deviceId, string model, int temprature)
         {
             if (Account.IsLoggedIn)
             {
@@ -220,7 +220,7 @@ namespace PowerIT.Govee
             }
         }
 
-        public static async Task<Models.Control.Response> Color(string deviceId, string model, Color color)
+        public static async Task<Models.Control.Response> ColorAsync(string deviceId, string model, Color color)
         {
             if (Account.IsLoggedIn)
             {

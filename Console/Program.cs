@@ -15,15 +15,15 @@ namespace CSharpCOD
             if (Account.IsLoggedIn)
             {
                 //List devices
-                var devices = await Devices.List();
-                var device = devices.Data.Devices.First(d => d.Name == "Office Light");
+                var devices = await Devices.ListAsync();
+                var device = devices.Data.Devices.First(d => d.Name == "Lounge Light 2");
 
                 //Device state
                 //var state = await Device.State(device.Id, device.Model);
                 //Console.WriteLine(state.Data.Properties.First(p => p.Online != null).Online);
 
                 //Turn on device
-                var on = await Device.On(device.Id, device.Model);
+                var on = await Device.OnAsync(device.Id, device.Model);
                 Console.WriteLine(on.Status);
 
                 //Turn off device
