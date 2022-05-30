@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mobile.MainPage">
+
+    <StackLayout>
+        <StackLayout VerticalOptions="StartAndExpand">
+            <Frame BackgroundColor="#2196F3" CornerRadius="0" Padding="0, 45, 0, 15">
+                <Label Text="Govee!" HorizontalTextAlignment="Center" TextColor="White" FontSize="30" />
+            </Frame>
+
+            <StackLayout Orientation="Horizontal" Margin="10">
+                <Label VerticalTextAlignment="Center" Text="API Key:" Margin="10, 0, 5, 0" />
+                <Entry x:Name="apiKeyEntry" Placeholder="API key" HorizontalOptions="FillAndExpand" />
+                <Button Text="Login" Clicked="Login" BackgroundColor="#2196F3" TextColor="White" Margin="5, 0, 10, 0" Padding="10, 0, 10, 0" />
+            </StackLayout>
+
+            <Picker x:Name="devicePicker" Title="Devices" IsEnabled="False" Margin="30, 20, 30, 0" />
+            <Button x:Name="onButton" Text="On" Clicked="LightOn" BackgroundColor="#2196F3" TextColor="White" IsEnabled="False" Margin="30, 20, 30, 0" />
+            <Button x:Name="offButton" Text="Off" Clicked="LightOff" BackgroundColor="#2196F3" TextColor="White" IsEnabled="False" Margin="30, 10, 30, 0" />
+        </StackLayout>
+
+        <StackLayout Orientation="Vertical" VerticalOptions="End">
+            <Frame x:Name="errorFrame" BackgroundColor="Red" CornerRadius="5" IsVisible="false" Opacity="0" Margin="10, 10, 10, 45" Padding="5">
+                <Label x:Name="errorLabel" ClassId="errorLabel" PropertyChanged="ShowMessage" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="White" />
+            </Frame>
+        </StackLayout>
+
+        <StackLayout Orientation="Vertical" VerticalOptions="End">
+            <Frame x:Name="successFrame" BackgroundColor="Green" CornerRadius="5" IsVisible="false" Opacity="0" Margin="10, 10, 10, 45" Padding="5">
+                <Label x:Name="successLabel" ClassId="successLabel" PropertyChanged="ShowMessage" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="White" />
+            </Frame>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
+
