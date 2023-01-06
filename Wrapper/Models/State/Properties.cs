@@ -4,7 +4,7 @@ namespace PowerIT.Govee.Models.State
 {
     public class Properties
     {
-        public string Online { get; set; }
+        public object Online { get; set; }
         public string PowerState { get; set; }
         public int? Brightness { get; set; }
         public Color Color { get; set; }

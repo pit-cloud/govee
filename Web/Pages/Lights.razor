@@ -1,0 +1,99 @@
+﻿@page "/lights"
+
+<PageTitle>Lights</PageTitle>
+
+<h1>List of Lights</h1>
+
+<div class="px-4">
+    <div class="input-group">    
+        <input class="form-control" placeholder="API Key" @onchange="@Login" />
+    </div>
+</div>
+
+<div class="px-4">
+    @if (devices == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Model</th>
+                    <th>Name</th>
+                    <th>State</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var device in devices)
+                {
+                    <tr>
+                        <td>@device.data.Id</td>
+                        <td>@device.data.Model</td>
+                        <td>@device.data.Name</td>
+                        <td>@device.state</td>
+
+                        <td>
+                            <button class="btn btn-primary" @onclick="() => On(device.data)">On</button>
+                            <button class="btn btn-primary" @onclick="() => Off(device.data)">Off</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@code {
+    public class Devices
+    {
+        public PowerIT.Govee.Models.List.Device? data { get; set; }
+        public string? state { get; set; }
+    }
+
+    private List<Devices> devices = new List<Devices>();
+
+    private async Task Login(Microsoft.AspNetCore.Components.ChangeEventArgs arguments)
+    {
+        try
+        {
+            if (arguments.Value != null)
+            {
+                PowerIT.Govee.Account.Login(arguments.Value.ToString()); /*"1aaebbb1-2e82-42cc-a415-2db1a8a8b256");*/
+            }
+
+            if (PowerIT.Govee.Account.IsLoggedIn)
+            {
+                var response = await PowerIT.Govee.Devices.ListAsync();
+
+                foreach (PowerIT.Govee.Models.List.Device device in response.Data.Devices)
+                {
+                    var state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model);
+
+                    devices.Add(new Devices()
+                        {
+                            data = device,
+                            state = state.Data.Properties.First(p => p.Online != null).Online.ToString().ToLower() == "true" ? "Online" : "Offline"
+                        });
+                }
+            }
+        }
+        catch(Exception exception)
+        {
+            var ex = exception;
+        }
+    }
+
+    private async Task On(PowerIT.Govee.Models.List.Device device)
+    {
+        await PowerIT.Govee.Device.OnAsync(device.Id, device.Model);
+    }
+    
+    private async Task Off(PowerIT.Govee.Models.List.Device device)
+    {
+        await PowerIT.Govee.Device.OffAsync(device.Id, device.Model);
+    }
+}

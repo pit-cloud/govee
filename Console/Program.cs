@@ -16,30 +16,30 @@ namespace CSharpCOD
             {
                 //List devices
                 var devices = await Devices.ListAsync();
-                var device = devices.Data.Devices.First(d => d.Name == "Lounge Light 2");
+                var device = devices.Data.Devices.First(d => d.Name == "Office Light");
 
                 //Device state
-                //var state = await Device.State(device.Id, device.Model);
-                //Console.WriteLine(state.Data.Properties.First(p => p.Online != null).Online);
+                var state = await Device.StateAsync(device.Id, device.Model);
+                Console.WriteLine(state.Data.Properties.First(p => p.Online != null).Online.ToString().ToLower());
 
-                //Turn on device
-                var on = await Device.OnAsync(device.Id, device.Model);
-                Console.WriteLine(on.Status);
-
-                //Turn off device
-                //var off = await Device.Off(device.Id, device.Model);
+                ////Turn off device
+                //var off = await Device.OffAsync(device.Id, device.Model);
                 //Console.WriteLine(off.Status);
 
-                //Change device brightness
-                //var brightness = await Device.Brightness(device.Id, device.Model, 100);
+                ////Turn on device
+                //var on = await Device.OnAsync(device.Id, device.Model);
+                //Console.WriteLine(on.Status);
+
+                ////Change device brightness
+                //var brightness = await Device.BrightnessAsync(device.Id, device.Model, 100);
                 //Console.WriteLine(brightness.Status);
 
-                ////Change device color
-                //var color = await Device.Color(device.Id, device.Model, Color.White);
+                //////Change device color
+                //var color = await Device.ColorAsync(device.Id, device.Model, Color.White);
                 //Console.WriteLine(color.Status);
 
-                //Change device temprature
-                //var temprature = await Device.Temprature(device.Id, device.Model, 9000);
+                ////Change device temprature
+                //var temprature = await Device.TempratureAsync(device.Id, device.Model, 9000);
                 //Console.WriteLine(temprature.Status);
             }
             else

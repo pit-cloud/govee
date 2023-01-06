@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Remove=".gitignore" />
@@ -10,6 +10,6 @@
 		<None Remove="**\**.*~" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="PowerIT.Govee" Version="1.3.0" />
+	  <ProjectReference Include="..\Wrapper\Wrapper.csproj" />
 	</ItemGroup>
 </Project>
