@@ -2,37 +2,37 @@
 
 <PageTitle>Lights</PageTitle>
 
-<h1>Lights</h1>
+<h1 class="px-2">Lights</h1>
 
-<div class="px-4 pt-4 pb-2">
+<div class="px-2 pt-4 pb-2">
     <div class="input-group">    
         <input class="form-control" placeholder="API key" @onchange="@Login" />
     </div>
 </div>
 
-<div class="px-4 pt-2 pb-4">
+<div class="pt-2 pb-4">
     @if (error != 0)
     {
         if (error == -1)
         {
-            <p style="color: red">There has been an error logging in, please check your API key.</p>
+            <p class="px-2 text-danger">There has been an error logging in, please check your API key.</p>
         }
         else if (error == -2)
         {
-            <p style="color: red">There has been an error performing an action, please try again shortly.</p>
+            <p class="px-2 text-danger">There has been an error performing an action, please try again shortly.</p>
         }
         else
         {
-            <p style="color: red">There has been an unkown error, please try again shortly.</p>
+            <p class="px-2 text-danger">There has been an unkown error, please try again shortly.</p>
         }
     }
     else if (loading == false)
     {
-        <p>Enter your API key to get started.</p>
+        <p class="px-2">Enter your API key to get started.</p>
     }
     else if (devices.Count == 0 && loading == true)
     {
-        <p><em>Loading...</em></p>
+        <p class="px-2"><em>Loading...</em></p>
     }
     else
     {
@@ -56,20 +56,20 @@
 
                                 @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true")
                                 {
-                                    <td style="color: green">Online</td>
+                                    <td class="text-success">Online</td>
                                 }
                                 else
                                 {
-                                    <td style="color: red">Offline</td>
+                                    <td class="text-danger">Offline</td>
                                 }
 
                                 @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true" && device.state?.Data?.Properties?.First(p => p.PowerState != null)?.PowerState == "on")
                                 {
-                                    <td style="color: green">On</td>
+                                    <td class="text-success">On</td>
                                 }
                                 else
                                 {
-                                    <td style="color: red">Off</td>
+                                    <td class="text-danger">Off</td>
                                 }
 
                                 <td>
