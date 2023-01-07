@@ -15,18 +15,22 @@
     {
         if (error == -1)
         {
-            <p style="color: red"><em>There has been an error logging in, please check your API key.</em></p>
+            <p style="color: red">There has been an error logging in, please check your API key.</p>
         }
         else if (error == -2)
         {
-            <p style="color: red"><em>There has been an error performing an action, please try again shortly.</em></p>
+            <p style="color: red">There has been an error performing an action, please try again shortly.</p>
         }
         else
         {
-            <p style="color: red"><em>There has been an unkown error, please try again shortly.</em></p>
+            <p style="color: red">There has been an unkown error, please try again shortly.</p>
         }
     }
-    else if (devices.Count == 0)
+    else if (loading == false)
+    {
+        <p>Enter your API key to get started.</p>
+    }
+    else if (devices.Count == 0 && loading == true)
     {
         <p><em>Loading...</em></p>
     }
@@ -83,6 +87,7 @@
 
 @code {
     private int error = 0;
+    private bool loading = false;
     private List<Devices> devices = new List<Devices>();
 
     private class Devices
@@ -95,24 +100,28 @@
     {
         Error(0);
 
-        try
+        if (arguments.Value?.ToString()?.Length > 0)
         {
-            if (PowerIT.Govee.Account.IsLoggedIn)
+            try
             {
-                await PowerIT.Govee.Account.LogoutAsync();
-            }
+                if (PowerIT.Govee.Account.IsLoggedIn)
+                {
+                    await PowerIT.Govee.Account.LogoutAsync();
+                }
 
-            await PowerIT.Govee.Account.LoginAsync(arguments.Value?.ToString());
-            await List();
-        }
-        catch
-        {
-            Error(-1);
+                await PowerIT.Govee.Account.LoginAsync(arguments.Value?.ToString());
+                await List();
+            }
+            catch
+            {
+                Error(-1);
+            }
         }
     }
 
     private async Task List()
     {
+        Loading();
         Error(0);
 
         try
@@ -139,6 +148,7 @@
 
     private async Task On(PowerIT.Govee.Models.List.Device device)
     {
+        Loading();
         Error(0);
 
         try
@@ -157,6 +167,7 @@
 
     private async Task Off(PowerIT.Govee.Models.List.Device device)
     {
+        Loading();
         Error(0);
 
         try
@@ -173,8 +184,21 @@
         }
     }
 
+    private void Loading()
+    {
+        if (loading)
+        {
+            loading = false;
+        }
+        else
+        {
+            loading = true;
+        }
+    }
+
     private void Error(int code)
     {
+        Loading();
         devices.Clear();
 
         error = code;
