@@ -1,42 +1,37 @@
-name: Deploy to GitHub Pages
+name: github-pages
 
-# Run workflow on every push to the master branch
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - main
+    paths:
+      - Web/**
   workflow_dispatch:
 
 jobs:
-  deploy-to-github-pages:
-    # use ubuntu-latest image to run steps on
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    # uses GitHub's checkout action to checkout code form the master branch
     - uses: actions/checkout@v3
     
-    # sets up .NET Core SDK
-    - name: Setup .NET Core SDK
+    - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0
 
-    # publishes Blazor project to the release-folder
-    - name: Publish .NET Core Project
+    - name: Publish
       run: dotnet publish Web/Web.csproj -c Release -o release --nologo
       
-      # changes the base-tag in index.html from '/' to 'Web' to match GitHub Pages repository subdirectory
-    - name: Change base-tag in index.html from / to BlazorGitHubPagesDemo
+    - name: Change base-tag
       run: sed -i 's/<base href="\/" \/>/<base href="\/govee\/" \/>/g' release/wwwroot/index.html
     
-    # copy index.html to 404.html to serve the same file when a file is not found
-    - name: copy index.html to 404.html
+    - name: Update eror page
       run: cp release/wwwroot/index.html release/wwwroot/404.html
 
-    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
-    - name: Add .nojekyll file
+    - name: Stop Jekyll
       run: touch release/wwwroot/.nojekyll
       
-    - name: Commit wwwroot to GitHub Pages
+    - name: Commit to pages branch
       uses: JamesIves/github-pages-deploy-action@4.1.1
       with:
         branch: gh-pages
