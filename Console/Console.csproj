@@ -10,6 +10,6 @@
 		<None Remove="**\**.*~" />
 	</ItemGroup>
 	<ItemGroup>
-	  <PackageReference Include="PowerIT.Govee" Version="1.4.5" />
+	  <PackageReference Include="PowerIT.Govee" Version="1.5.0" />
 	</ItemGroup>
 </Project>
