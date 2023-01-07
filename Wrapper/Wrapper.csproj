@@ -7,8 +7,8 @@
 		<PackageId>PowerIT.Govee</PackageId>
 		<Authors>Dan Searle</Authors>
 		<Description>Simple API wrapper for the Govee Home API.</Description>
-		<PackageVersion>1.4.0</PackageVersion>
-		<ReleaseVersion>1.4.0</ReleaseVersion>
+		<PackageVersion>1.5.0</PackageVersion>
+		<ReleaseVersion>1.5.0</ReleaseVersion>
 		<SynchReleaseVersion>false</SynchReleaseVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<NeutralLanguage>en-GB</NeutralLanguage>

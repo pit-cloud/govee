@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace PowerIT.Govee
 {
     public class Account
     {
-        public static bool IsLoggedIn { get; set; } = false;
+        private static API _API { get; set; }
+        public static bool IsLoggedIn { get; private set; } = false;
 
         public static bool Login(string apiKey)
         {
@@ -13,7 +15,7 @@ namespace PowerIT.Govee
             {
                 IsLoggedIn = true;
 
-                new API(apiKey);
+                _API = new API(apiKey);
 
                 return true;
             }
@@ -29,7 +31,7 @@ namespace PowerIT.Govee
             {
                 IsLoggedIn = true;
 
-                new API(apiKey);
+                _API = new API(apiKey);
 
                 return Task.FromResult(true);
             }
@@ -37,6 +39,20 @@ namespace PowerIT.Govee
             {
                 throw new Exception("No API key provided.");
             }
+        }
+
+        public static void Logout()
+        {
+            IsLoggedIn = false;
+
+            _API.Dispose();
+        }
+
+        public async static Task LogoutAsync()
+        {
+            IsLoggedIn = false;
+
+            await Task.Run(() => _API.Dispose());
         }
     }
 }

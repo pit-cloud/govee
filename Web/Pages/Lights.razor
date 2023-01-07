@@ -2,98 +2,184 @@
 
 <PageTitle>Lights</PageTitle>
 
-<h1>List of Lights</h1>
+<h1>Lights</h1>
 
-<div class="px-4">
+<div class="px-4 pt-4 pb-2">
     <div class="input-group">    
-        <input class="form-control" placeholder="API Key" @onchange="@Login" />
+        <input class="form-control" placeholder="API key" @onchange="@Login" />
     </div>
 </div>
 
-<div class="px-4">
-    @if (devices == null)
+<div class="px-4 pt-2 pb-4">
+    @if (error != 0)
+    {
+        if (error == -1)
+        {
+            <p style="color: red"><em>There has been an error logging in, please check your API key.</em></p>
+        }
+        else if (error == -2)
+        {
+            <p style="color: red"><em>There has been an error performing an action, please try again shortly.</em></p>
+        }
+        else
+        {
+            <p style="color: red"><em>There has been an unkown error, please try again shortly.</em></p>
+        }
+    }
+    else if (devices.Count == 0)
     {
         <p><em>Loading...</em></p>
     }
     else
     {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Model</th>
-                    <th>Name</th>
-                    <th>State</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var device in devices)
-                {
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td>@device.data.Id</td>
-                        <td>@device.data.Model</td>
-                        <td>@device.data.Name</td>
-                        <td>@device.state</td>
-
-                        <td>
-                            <button class="btn btn-primary" @onclick="() => On(device.data)">On</button>
-                            <button class="btn btn-primary" @onclick="() => Off(device.data)">Off</button>
-                        </td>
+                        <th>Name</th>
+                        <th>Online</th>
+                        <th>State</th>
+                        <th>Actions</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var device in devices)
+                    {
+                        @if (device.data != null)
+                        {
+                            <tr>
+                                <td>@device.data.Name</td>
+
+                                @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true")
+                                {
+                                    <td style="color: green">Online</td>
+                                }
+                                else
+                                {
+                                    <td style="color: red">Offline</td>
+                                }
+
+                                @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true" && device.state?.Data?.Properties?.First(p => p.PowerState != null)?.PowerState == "on")
+                                {
+                                    <td style="color: green">On</td>
+                                }
+                                else
+                                {
+                                    <td style="color: red">Off</td>
+                                }
+
+                                <td>
+                                    <button class="btn btn-primary" @onclick="() => On(device.data)">On</button>
+                                    <button class="btn btn-primary" @onclick="() => Off(device.data)">Off</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
 
 @code {
-    public class Devices
+    private int error = 0;
+    private List<Devices> devices = new List<Devices>();
+
+    private class Devices
     {
         public PowerIT.Govee.Models.List.Device? data { get; set; }
-        public string? state { get; set; }
+        public PowerIT.Govee.Models.State.Response? state { get; set; }
     }
-
-    private List<Devices> devices = new List<Devices>();
 
     private async Task Login(Microsoft.AspNetCore.Components.ChangeEventArgs arguments)
     {
+        Error(0);
+
         try
         {
-            if (arguments.Value != null)
-            {
-                PowerIT.Govee.Account.Login(arguments.Value.ToString()); /*"1aaebbb1-2e82-42cc-a415-2db1a8a8b256");*/
-            }
-
             if (PowerIT.Govee.Account.IsLoggedIn)
             {
-                var response = await PowerIT.Govee.Devices.ListAsync();
-
-                foreach (PowerIT.Govee.Models.List.Device device in response.Data.Devices)
-                {
-                    var state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model);
-
-                    devices.Add(new Devices()
-                        {
-                            data = device,
-                            state = state.Data.Properties.First(p => p.Online != null).Online.ToString().ToLower() == "true" ? "Online" : "Offline"
-                        });
-                }
+                await PowerIT.Govee.Account.LogoutAsync();
             }
+
+            await PowerIT.Govee.Account.LoginAsync(arguments.Value?.ToString());
+            await List();
         }
-        catch(Exception exception)
+        catch
         {
-            var ex = exception;
+            Error(-1);
         }
     }
+
+    private async Task List()
+    {
+        Error(0);
+
+        try
+        {
+            var response = await PowerIT.Govee.Devices.ListAsync();
+
+            foreach (PowerIT.Govee.Models.List.Device device in response.Data.Devices)
+            {
+                var state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model);
+
+                devices.Add(new Devices()
+                    {
+                        data = device,
+                        state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model)
+                    });
+            }
+        }
+        catch
+        {
+            Error(-1);
+        }
+    }
+
 
     private async Task On(PowerIT.Govee.Models.List.Device device)
     {
-        await PowerIT.Govee.Device.OnAsync(device.Id, device.Model);
+        Error(0);
+
+        try
+        {
+            await PowerIT.Govee.Device.OnAsync(device.Id, device.Model);
+
+            Thread.Sleep(1000);
+
+            await List();
+        }
+        catch
+        {
+            Error(-2);
+        }
     }
-    
+
     private async Task Off(PowerIT.Govee.Models.List.Device device)
     {
-        await PowerIT.Govee.Device.OffAsync(device.Id, device.Model);
+        Error(0);
+
+        try
+        {
+            await PowerIT.Govee.Device.OffAsync(device.Id, device.Model);
+
+            Thread.Sleep(1000);
+
+            await List();
+        }
+        catch
+        {
+            Error(-2);
+        }
+    }
+
+    private void Error(int code)
+    {
+        devices.Clear();
+
+        error = code;
+
+        //-1 = Login error
+        //-2 = Action error
     }
 }

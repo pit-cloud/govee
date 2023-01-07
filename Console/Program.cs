@@ -16,7 +16,7 @@ namespace CSharpCOD
             {
                 //List devices
                 var devices = await Devices.ListAsync();
-                var device = devices.Data.Devices.First(d => d.Name == "Office Light");
+                var device = devices.Data.Devices.First(d => d.Name == "Lounge Light 2");
 
                 //Device state
                 var state = await Device.StateAsync(device.Id, device.Model);
