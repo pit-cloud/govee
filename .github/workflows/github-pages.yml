@@ -21,9 +21,6 @@ jobs:
 
     - name: Publish
       run: dotnet publish Web/Web.csproj -c Release -o release --nologo
-    
-    - name: Update eror page
-      run: cp release/wwwroot/index.html release/wwwroot/404.html
 
     - name: Stop Jekyll
       run: touch release/wwwroot/.nojekyll
