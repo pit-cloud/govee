@@ -1,15 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace Web
 {
     public class UsersContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public UsersContext(DbContextOptions<UsersContext> options)
+            : base(options) { }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
-        {
-            options.UseSqlServer("Server=pitsqlgovee.database.windows.net;Database=pit-sql-govee;Integrated Security=false;User ID=goveeadmin;Password=ChelseaFC1995>?<;");
-        }
+        public DbSet<User> Users { get; set; }
     }
 
     public class User

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using PowerIT.Govee;
 using System.Security.Claims;
 
@@ -152,7 +153,7 @@ namespace Web.Pages
 
                 if (sid != null)
                 {
-                    using (var db = new UsersContext())
+                    using (var db = DbContextFactory.CreateDbContext())
                     {
                         var results = db.Users.Where(u => u.UserId == sid);
 
