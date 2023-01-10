@@ -1,17 +1,46 @@
 ﻿@page "/lights"
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 <PageTitle>Lights</PageTitle>
-
 <h1 class="px-2">Lights</h1>
 
 <div class="px-2 pt-4 pb-2">
-    <div class="input-group">    
-        <input class="form-control" placeholder="API key" @onchange="@Login" />
+    <div class="input-group">
+        <select class="form-select" @onchange="@Login">
+            @if (error <= -4 && error >= -5)
+            {
+                if (error == -4)
+                {
+                    <option disabled selected>No API keys found, please add one through your profile.</option>
+                }
+                else if (error == -5)
+                {
+                    <option disabled selected>There has been an error retrieving API keys, please try again shortly.</option>
+                }
+            }
+            else
+            {
+                @if (users.Count != 0)
+                {
+                    <option disabled selected>Select API key</option>
+
+                    @foreach (User user in users)
+                    {
+                        <option value="@user.ApiKey">@user.ApiKey</option>
+                    }
+                }
+                else
+                {
+                    <option disabled selected>Loading API keys...</option>
+
+                }
+            }
+        </select>
     </div>
 </div>
 
 <div class="pt-2 pb-4">
-    @if (error != 0)
+    @if (error <= -1 && error >= -3)
     {
         if (error == -1)
         {
@@ -21,18 +50,18 @@
         {
             <p class="px-2 text-danger">There has been an error performing an action, please try again shortly.</p>
         }
-        else
+        else if (error == -3)
         {
-            <p class="px-2 text-danger">There has been an unkown error, please try again shortly.</p>
+            <p class="px-2 text-danger">No devices found.</p>
         }
     }
-    else if (loading == false)
+    else if (!loading)
     {
         <p class="px-2">Enter your API key to get started.</p>
     }
-    else if (devices.Count == 0 && loading == true)
+    else if (devices.Count == 0 && loading)
     {
-        <p class="px-2"><em>Loading...</em></p>
+        <p class="px-2"><em>Loading devices...</em></p>
     }
     else
     {
@@ -49,12 +78,12 @@
                 <tbody>
                     @foreach (var device in devices)
                     {
-                        @if (device.data != null)
+                        @if (device.Data != null)
                         {
                             <tr>
-                                <td>@device.data.Name</td>
+                                <td>@device.Data.Name</td>
 
-                                @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true")
+                                @if (@device.State?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true")
                                 {
                                     <td class="text-success">Online</td>
                                 }
@@ -63,7 +92,7 @@
                                     <td class="text-danger">Offline</td>
                                 }
 
-                                @if (@device.state?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true" && device.state?.Data?.Properties?.First(p => p.PowerState != null)?.PowerState == "on")
+                                @if (@device.State?.Data?.Properties?.First(p => p.Online != null)?.Online?.ToString()?.ToLower() == "true" && device.State?.Data?.Properties?.First(p => p.PowerState != null)?.PowerState == "on")
                                 {
                                     <td class="text-success">On</td>
                                 }
@@ -73,8 +102,8 @@
                                 }
 
                                 <td>
-                                    <button class="btn btn-primary" @onclick="() => On(device.data)">On</button>
-                                    <button class="btn btn-primary" @onclick="() => Off(device.data)">Off</button>
+                                    <button class="btn btn-primary" @onclick="() => On(device.Data)">On</button>
+                                    <button class="btn btn-primary" @onclick="() => Off(device.Data)">Off</button>
                                 </td>
                             </tr>
                         }
@@ -84,126 +113,3 @@
         </div>
     }
 </div>
-
-@code {
-    private int error = 0;
-    private bool loading = false;
-    private List<Devices> devices = new List<Devices>();
-
-    private class Devices
-    {
-        public PowerIT.Govee.Models.List.Device? data { get; set; }
-        public PowerIT.Govee.Models.State.Response? state { get; set; }
-    }
-
-    private async Task Login(Microsoft.AspNetCore.Components.ChangeEventArgs arguments)
-    {
-        Error(0);
-
-        if (arguments.Value?.ToString()?.Length > 0)
-        {
-            try
-            {
-                if (PowerIT.Govee.Account.IsLoggedIn)
-                {
-                    await PowerIT.Govee.Account.LogoutAsync();
-                }
-
-                await PowerIT.Govee.Account.LoginAsync(arguments.Value?.ToString());
-                await List();
-            }
-            catch
-            {
-                Error(-1);
-            }
-        }
-    }
-
-    private async Task List()
-    {
-        Loading();
-        Error(0);
-
-        try
-        {
-            var response = await PowerIT.Govee.Devices.ListAsync();
-
-            foreach (PowerIT.Govee.Models.List.Device device in response.Data.Devices)
-            {
-                var state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model);
-
-                devices.Add(new Devices()
-                    {
-                        data = device,
-                        state = await PowerIT.Govee.Device.StateAsync(device.Id, device.Model)
-                    });
-            }
-        }
-        catch
-        {
-            Error(-1);
-        }
-    }
-
-
-    private async Task On(PowerIT.Govee.Models.List.Device device)
-    {
-        Loading();
-        Error(0);
-
-        try
-        {
-            await PowerIT.Govee.Device.OnAsync(device.Id, device.Model);
-
-            Thread.Sleep(1000);
-
-            await List();
-        }
-        catch
-        {
-            Error(-2);
-        }
-    }
-
-    private async Task Off(PowerIT.Govee.Models.List.Device device)
-    {
-        Loading();
-        Error(0);
-
-        try
-        {
-            await PowerIT.Govee.Device.OffAsync(device.Id, device.Model);
-
-            Thread.Sleep(1000);
-
-            await List();
-        }
-        catch
-        {
-            Error(-2);
-        }
-    }
-
-    private void Loading()
-    {
-        if (loading)
-        {
-            loading = false;
-        }
-        else
-        {
-            loading = true;
-        }
-    }
-
-    private void Error(int code)
-    {
-        Loading();
-        devices.Clear();
-
-        error = code;
-
-        //-1 = Login error
-        //-2 = Action error
-    }
-}

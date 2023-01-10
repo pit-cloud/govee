@@ -1,0 +1,33 @@
+﻿@using System.Security.Claims;
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeView>
+    <Authorized>
+        @if (!string.IsNullOrEmpty(Name)) {
+            <span>Hello, @Name!</span>
+        }
+        else
+        {
+            <span>Hello, @context.User.Identity?.Name!</span>
+        }
+        <a href="MicrosoftIdentity/Account/SignOut">Log out</a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="MicrosoftIdentity/Account/SignIn">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string Name = "";
+
+    protected override async void OnInitialized()
+    {
+        var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authenticationState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            Name = user.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.GivenName).Value;
+        }
+    }
+}
