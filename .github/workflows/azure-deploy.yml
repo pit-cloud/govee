@@ -22,10 +22,10 @@ jobs:
           include-prerelease: true
 
       - name: Build with dotnet
-        run: dotnet build Web/Web.csproj --configuration Release
+        run: dotnet build Web\Web.csproj --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish Web/Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/govee
+        run: dotnet publish Web\Web.csproj -c Release -o ${{env.DOTNET_ROOT}}/govee
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
