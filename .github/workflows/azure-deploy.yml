@@ -21,10 +21,10 @@ jobs:
           dotnet-version: '7.x'
 
       - name: Build with dotnet
-        run: dotnet build -p 'Web/Web.csproj' --configuration Release
+        run: dotnet build -p "Web/Web.csproj" --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -p 'Web/Web.csproj' -c Release -o ${{env.DOTNET_ROOT}}/govee
+        run: dotnet publish -p "Web/Web.csproj" -c Release -o ${{env.DOTNET_ROOT}}/govee
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
