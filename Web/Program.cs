@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
-using Microsoft.IdentityModel.Logging;
 using Web;
 
 var builder = WebApplication.CreateBuilder(args);
