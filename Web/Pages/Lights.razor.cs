@@ -9,6 +9,7 @@ namespace Web.Pages
     {
         private int error = 0;
         private bool loading = false;
+        private ClaimsPrincipal? user;
         private List<User> users = new();
         private List<Devices> devices = new();
 
@@ -144,7 +145,8 @@ namespace Web.Pages
         protected override async Task OnInitializedAsync()
         {
             var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authenticationState.User;
+
+            user = authenticationState.User;
 
             if (user.Identity.IsAuthenticated)
             {

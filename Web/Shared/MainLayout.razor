@@ -1,8 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
+<div class="container">
+    <header>
+        <NavBar />
+    </header>
+
+    <main>
+        @Body
+    </main>
+</div>
+
+@*
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavBar />
     </div>
 
     <main>
@@ -15,3 +26,4 @@
         </article>
     </main>
 </div>
+*@

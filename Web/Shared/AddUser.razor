@@ -1,0 +1,33 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using System.Security.Claims
+@inject IDbContextFactory<UsersContext> DbContextFactory
+
+<EditForm Model="@userUpdate" OnSubmit="@Submit">
+    <div class="input-group mb-3">
+        <InputText id="apiKey" class="form-control" placeholder="API key" @bind-Value="userUpdate.ApiKey" />
+
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public ClaimsPrincipal activeUser { get; set; }
+
+    private User userUpdate = new();
+
+    private async Task Submit()
+    {
+        using var db = DbContextFactory.CreateDbContext();
+
+        var user = new User()
+            {
+                UserId = new Guid(activeUser.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value),
+                Name = activeUser.FindFirst("name")?.Value,
+                ApiKey = userUpdate.ApiKey
+            };
+
+        await db.AddAsync(user);
+        await db.SaveChangesAsync();
+    }
+}
